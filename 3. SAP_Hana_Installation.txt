@@ -1,0 +1,38 @@
+============
+Installation
+============
+
+CMD> C:\Packages\pscp -P 22 C:\Packages\HANA20_SPS05_REV57.ZIP root@10.2.1.4:/tmp
+
+cd /tmp
+unzip HANA20_SPS05_REV57.ZIP
+
+cd /tmp/HANA20_SPS05_REV57
+./hdblcm
+
+Do you want to specify additional components location? (y/n) [n]:       <-'
+Enter selected action index [3]:                                        1
+Enter Installation Path [/hana/shared]:                                 <-'
+Enter Local Host Name [hana01]:                                         <-'
+Do you want to add hosts to the system? (y/n) [n]:                      <-'
+Enter SAP HANA System ID:                                               HD1
+Enter Instance Number [00]:                                             <-'
+Enter Local Host Worker Group [default]:                                <-'
+Select System Usage / Enter Index [4]:                                  2
+Do you want to enable data and log volume encryption? [n]:              <-'
+Enter Location of Data Volumes [/hana/data/HD1]:                        <-'
+Enter Location of Log Volumes [/hana/log/HD1]:                          <-'
+Restrict maximum memory allocation? [n]:                                <-'
+Apply System Size Dependent Resource Limits? (SAP Note 3014176) [y]:    <-'
+Enter SAP Host Agent User (sapadm) Password:                            India123
+Confirm SAP Host Agent User (sapadm) Password:                          India123
+Enter System Administrator (hd1adm) Password:                           India123
+Confirm System Administrator (hd1adm) Password:                         India123
+Enter System Administrator Home Directory [/usr/sap/HD1/home]:          <-'
+Enter System Administrator Login Shell [/bin/sh]:                       <-'
+Enter System Administrator User ID [1001]:                              <-'
+Enter ID of User Group (sapsys) [79]:                                   <-'
+Enter System Database User (SYSTEM) Password:                           India123
+Confirm System Database User (SYSTEM) Password:                         India123
+Restart system after machine reboot? [n]:                               <-'
+Do you want to continue? (y/n):                                         y

@@ -1,0 +1,117 @@
+https://azure.com -> [Free account] / [Try Azure for free]
+
+https://account.azure.com/subscriptions -> <subscription>
+
+https://portal.azure.com -> All services
+
+<< Resource Group >>
+
+   GENERAL -> Resource groups -> Create
+
+     Basics
+       Resource group           HanaRG
+       Region                   (US) East US
+
+     [Review + create] -> [Create]
+
+
+<< Virtual Network >>
+
+   NETWORKING -> Virtual networks -> Create
+
+     Basics
+       Resource group           HanaRG
+       Name                     HanaVNet
+
+     IP Addresses
+       IPv4 address space       10.1.0.0/16
+
+       Remove subnet
+         Subnet name            default
+
+       Add subnet
+         Subnet name            Public       |  Private
+         Subnet address range   10.1.0.0/24  |  10.1.1.0/24
+
+     [Review + create] -> [Create]
+
+
+<< Virtual Machine >>
+
+   /* Bastion Host */
+
+   COMPUTE -> Virtual machines -> Create -> Virtual machine
+
+     Basics
+       Project details
+         Resource group         HanaRG
+
+       Instance details
+         Virtual machine name   HanaBastion
+         Image                  [smalldisk] Windows Server 2016 Datacenter - Gen1
+         Size                   Standard_B1ms - 1 vcpu, 2 GiB memory (?1,293.79/month)
+
+       Administrator account
+         Username               SysAdmin
+         Password               India19470815
+
+     Disks
+       OS disk type             Standard HDD (locally-redundant storage)
+
+     Networking
+       Virtual network          HanaVNet
+       Subnet                   Public (10.1.0.0/24)
+       Public IP                (new) HanaBastion-ip
+
+     [Review + create] -> [Create]
+
+   CMD> timedate.cpl            --> Change time zone…
+
+   CMD> slmgr /ato              --> Manually activate Windows (if not activated)
+
+
+   /* HANA */
+
+   COMPUTE -> Virtual machines -> Create -> Virtual machine
+
+     Basics
+       Project details
+         Resource group         HanaRG
+
+       Instance details
+         Virtual machine name   HANA01
+         Image                  SUSE Enterprise Linux for SAP 15 SP3 - BYOS - Gen1
+         Size                   Standard_A4m_v2 - 4 vcpus, 32 GiB memory (?12,517.14/month)
+
+       Administrator account
+         Authentication type    (o) Password
+         Username               azureuser
+         Password               India19470815
+
+       Licensing
+         Would you like to use an existing SUSE subscription?                 [X]
+         I confirm I have an eligible SUSE subscription to attach to this VM. [X]
+
+     Disks
+       OS disk type             Standard HDD (locally-redundant storage)
+       Data disks
+         Name                   HANA01_DataDisk_0
+                                HANA01_DataDisk_1
+         Size
+           Disk SKU             Standard HDD (locally-redundant storage)
+           Size                 32 GiB (S4)
+
+     Networking
+       Virtual network          HanaVNet
+       Subnet                   Private (10.1.1.0/24)
+       Public IP                None
+
+     [Review + create] -> [Create]
+
+   /* Stopping VM */
+
+   COMPUTE -> Virtual machines -> <VM> -> Stop
+
+   [!] Status of the stopped VM should be "Stopped (deallocated)".
+
+   COMPUTE -> Virtual machines -> <VM>-> Auto-shutdown -> (o) On

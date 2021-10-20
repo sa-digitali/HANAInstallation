@@ -1,0 +1,87 @@
+https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
+
+C:\Packages\azcopy list "https://saptraining.file.core.windows.net/hana?st=2021-10-01T00%3A30%3A00Z&se=2021-12-31T18%3A30%3A00Z&sp=rl&sv=2018-03-28&sr=s&sig=udy0Q6zxaLYmfXuR0zTn8whXua%2FhI05K%2BsrAqoehjV0%3D"
+C:\Packages\azcopy copy "https://saptraining.file.core.windows.net/hana/*?st=2021-10-01T00%3A30%3A00Z&se=2021-12-31T18%3A30%3A00Z&sp=rl&sv=2018-03-28&sr=s&sig=udy0Q6zxaLYmfXuR0zTn8whXua%2FhI05K%2BsrAqoehjV0%3D" C:\Packages
+
+
+=============
+Configuration
+=============
+
+sudo su -
+passwd
+
+
+/* OS settings */
+
+timedatectl set-timezone Asia/Kolkata
+timedatectl
+
+hostnamectl set-hostname --static hana01
+echo hana01.azure.com > /etc/hostname
+cat /etc/hostname
+
+echo "10.1.1.4        hana01.azure.com        hana01" >> /etc/hosts
+tail /etc/hosts
+ping -c4 hana01
+
+sed -i.bak '/preserve_hostname/ c\preserve_hostname: true' /etc/cloud/cloud.cfg
+grep preserve_hostname /etc/cloud/cloud.cfg
+
+
+/* HANA parameters */
+
+saptune daemon start
+saptune daemon status
+
+saptune solution apply HANA
+saptune solution verify HANA
+saptune solution list
+saptune note list
+
+
+/* Swap Space */
+
+dd if=/dev/zero of=/swapfile bs=1M count=2048
+chmod 600 /swapfile
+ll -h /swapfile
+
+mkswap /swapfile
+
+echo "/swapfile                                       swap            swap    defaults        0 0" >> /etc/fstab
+cat /etc/fstab
+
+swapon -av
+swapon -v
+free -m
+
+
+/* File System */
+
+lsblk
+pvs
+vgs
+lvs
+
+pvcreate /dev/sdc /dev/sdd
+vgcreate hana /dev/sdc /dev/sdd
+
+lvcreate -n data -i 2 -I 256 -L 20g hana
+lvcreate -n log -i 2 -I 256 -L 10g hana
+lvcreate -n shared -i 2 -I 256 -L 13.99g hana
+lvcreate -n backup -i 2 -I 256 -L 20g hana
+
+mkfs.xfs -f /dev/hana/data
+mkfs.xfs -f /dev/hana/log
+mkfs.xfs -f /dev/hana/shared
+mkfs.xfs -f /dev/hana/backup
+
+echo "/dev/hana/data                                  /hana/data      xfs     defaults        0 0" >> /etc/fstab
+echo "/dev/hana/log                                   /hana/log       xfs     defaults        0 0" >> /etc/fstab
+echo "/dev/hana/shared                                /hana/shared    xfs     defaults        0 0" >> /etc/fstab
+echo "/dev/hana/backup                                /hana/backup    xfs     defaults        0 0" >> /etc/fstab
+cat /etc/fstab
+
+mkdir -p /hana/{data,log,shared,backup}
+mount -av
+df -h

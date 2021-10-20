@@ -14,22 +14,29 @@ passwd
 
 /* OS settings */
 
+#Setting Timezome
 timedatectl set-timezone Asia/Kolkata
 timedatectl
 
+
+#changing Hostname
 hostnamectl set-hostname --static hana01
 echo hana01.azure.com > /etc/hostname
+
 cat /etc/hostname
 
-echo "10.1.1.4        hana01.azure.com        hana01" >> /etc/hosts
+echo "10.0.1.4        hana01.azure.com        hana01" >> /etc/hosts
 tail /etc/hosts
 ping -c4 hana01
 
+
+#Changing the Parameters in Cloud.cgf file. This will help to retain the hostname even after reboot
 sed -i.bak '/preserve_hostname/ c\preserve_hostname: true' /etc/cloud/cloud.cfg
 grep preserve_hostname /etc/cloud/cloud.cfg
 
 
-/* HANA parameters */
+/* Setting HANA parameters as recommended by SAP*/
+#For more Info: https://github.com/SUSE/saptune#what-is-saptune
 
 saptune daemon start
 saptune daemon status

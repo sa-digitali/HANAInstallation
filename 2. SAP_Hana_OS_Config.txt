@@ -37,6 +37,7 @@ grep preserve_hostname /etc/cloud/cloud.cfg
 
 /* Setting HANA parameters as recommended by SAP*/
 #For more Info: https://github.com/SUSE/saptune#what-is-saptune
+# https://blogs.sap.com/2017/12/22/prepare-your-linux-for-your-sap-solution-with-saptune/
 
 saptune daemon start
 saptune daemon status
